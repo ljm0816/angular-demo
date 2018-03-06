@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Hero } from '../../dao/hero';
 import { HeroService } from '../../service/hero.service';
+import { QuesService } from '../../service/ques.service';
 
 @Component({
   selector: 'app-heroes',
@@ -16,7 +17,8 @@ export class HeroesComponent implements OnInit{
 
   constructor(
     private heroService: HeroService,
-    private router: Router
+    private router: Router,
+    private quesService: QuesService
   ) { }
 
   ngOnInit(): void {
@@ -34,9 +36,21 @@ export class HeroesComponent implements OnInit{
    * 获取英雄列表
    */
   getHeroes(): void {
-    this.heroService.getHeroesSlowly().then((heroes) => {
+    this.heroService.getHeroes().then((heroes) => {
+      console.log('heroes', heroes)
       this.heroes = heroes;
     });
+  }
+
+  add(name: String): void {
+    name = name.trim();
+    if (!name) {
+      return;
+    }
+    this.heroService.create(name).then((hero) => {
+      this.heroes.push(hero);
+      this.selectedHero = null;
+    })
   }
 
   gotoDetail(): void {
