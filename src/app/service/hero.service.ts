@@ -36,10 +36,16 @@ export class HeroService {
     });
   }
 
+
   getHero(id: number): Promise<Hero> {
     return this.getHeroes().then(heroes => heroes.find(hero => hero.id === id));
   }
 
+  /**
+   * 修改英雄
+   * @param {Hero} hero
+   * @returns {Promise<Hero>}
+   */
   update(hero: Hero): Promise<Hero> {
     const url = `${this.heroesUrl}/${hero.id}`;
     console.log('url', url);
@@ -51,11 +57,24 @@ export class HeroService {
       .catch(this.handleError)
   }
 
+  /**
+   * 创建英雄
+   * @param {String} name
+   * @returns {Promise<Hero>}
+   */
   create(name: String): Promise<Hero> {
     return this.http.post(this.heroesUrl, JSON.stringify({name: name}), {headers: this.headers})
       .toPromise()
       .then(res => res.json().data as Hero)
       .catch(this.handleError)
+  }
+
+  delete(id: number):Promise<void> {
+    const url = `${this.heroesUrl}/${id}`;
+    return this.http.delete(url, {headers: this.headers})
+      .toPromise()
+      .then(() => null)
+      .catch(this.handleError);
   }
 
   // 请求异常处理
